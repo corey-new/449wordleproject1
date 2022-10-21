@@ -1,0 +1,2 @@
+[DATABASE]
+URL = 'sqlite+aiosqlite:///database/wordle.db'
