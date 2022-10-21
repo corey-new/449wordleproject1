@@ -50,7 +50,7 @@ def parse_game(game: Game) -> dict:
     '''takes in game dataclass and processes it to output to end user'''
     #returns if there were no guesses made
     if game.guesses is None:
-        return {'guesses_rem': game.guesses_rem, 'guesses': []}
+        return {'num_guesses': 6-game.guesses_rem, 'guesses': []}
 
     words = game.guesses.split(',')
     
@@ -65,7 +65,7 @@ def parse_game(game: Game) -> dict:
         correct, misplaced = _process_guess(w, game.word)
         result.append({'guess': w, 'correct': correct, 'misplaced': misplaced})
     
-    return {'guesses_rem': game.guesses_rem, 'guesses': result}
+    return {'num_guesses': 6-game.guesses_rem, 'guesses': result}
     
 
 
