@@ -2,7 +2,7 @@ from quart import request, Blueprint, abort, g
 import random
 from api.util.util import _get_db, WORD_BANK, parse_game
 from api.util.Classes import Users, Game
-
+from quart_schema import validate_request
 
 app_create = Blueprint('app_create', __name__)
 
@@ -35,7 +35,7 @@ async def create():
 
 
 @app_create.route('/game/<int:id>', methods=['GET'])
-async def get_game(id):
+async def get_game(id:int):
     '''Gets a single game give the game_id and returns the state of the game.'''
     headers = request.headers
     
@@ -52,10 +52,31 @@ async def get_game(id):
     if not game:
         return {}
     
-    game = Game(game.game_id, game.user_id, game.guesses_rem, game.word, game.guesses)
+    #gets guesses from table
+    guesses = await db.fetch_all(f'SELECT guess, guess_num FROM guesses WHERE game_id={game_id} ORDER BY guesses_num ASC')
+
+    if guesses:
+        guesses = [g.guess for g in guesses]
+    else:
+        guesses = []
+    
+    game = Game(game.game_id, game.user_id, game.guesses_rem, game.word, guesses)
     
     return parse_game(game)
     
+
+
+@app_create('/game/guess', methods=['POST'])
+@validate_request()
+async def make_guess():
+    '''checks and verifies that a user gives a valid guess and if so, returns the results of the guess'''
+    headers = request.headers
+    form = await request.form
+
+    
+    
+    db = await _get_db()
+
 
 
 

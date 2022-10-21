@@ -2,6 +2,7 @@ from venv import create
 from quart_schema import QuartSchema
 from quart import Quart, g, request
 from api.game.create import app_create
+from api.users.users import app_users
 import toml
 
 
@@ -11,6 +12,7 @@ if __name__ == '__main__':
 
 
     app.register_blueprint(app_create)
+    app.register_blueprint(app_users)
 
     #config app here
     app.config.from_file(f'./config/config.toml', toml.load)

@@ -28,7 +28,7 @@ def _check_misplaced(index: int, guess: str, answer: str, correct: list) -> bool
     
     return False
 
-def _process_guess(guess: str, answer: str) -> tuple:
+def process_guess(guess: str, answer: str) -> tuple:
     '''takes in a guess and the correct answer and returns a tuple of correct letters, misplaced letters'''
     correct = []
     misplaced = []
@@ -38,7 +38,7 @@ def _process_guess(guess: str, answer: str) -> tuple:
     for i in range(len(guess)):
         if guess[i] == answer[i]:
             correct.append(i)
-    #done in a separate loop to get all correct letters to make it easier to check for misplaced duplicates
+    #done in a separate loop to get all correct letters first to make it easier to check for misplaced duplicates
     for i in range(len(guess)):
         if _check_misplaced(i, guess, answer, correct):   #checks if the letter is in wrong place and 
             misplaced.append(i)
@@ -49,10 +49,10 @@ def _process_guess(guess: str, answer: str) -> tuple:
 def parse_game(game: Game) -> dict:
     '''takes in game dataclass and processes it to output to end user'''
     #returns if there were no guesses made
-    if game.guesses is None:
+    if len(game.guesses) == 0:
         return {'num_guesses': 6-game.guesses_rem, 'guesses': []}
 
-    words = game.guesses.split(',')
+    words = game.guesses
     
     #checks if the game is over and returns accordingly.
     if words[-1] == game.word:
@@ -62,7 +62,7 @@ def parse_game(game: Game) -> dict:
 
     result = []
     for w in words:
-        correct, misplaced = _process_guess(w, game.word)
+        correct, misplaced = process_guess(w, game.word)
         result.append({'guess': w, 'correct': correct, 'misplaced': misplaced})
     
     return {'num_guesses': 6-game.guesses_rem, 'guesses': result}
