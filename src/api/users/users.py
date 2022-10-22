@@ -1,23 +1,23 @@
 import dataclasses
 import sqlite3
-import databases
-from quart import Quart, g, request, abort, Blueprint
-from quart_schema import QuartSchema, RequestSchemaValidationError, validate_request
-from sqlalchemy import true
-import toml
+from quart import request, abort, Blueprint
+from quart_schema import validate_request
 import uuid
 from api.util.util import _get_db
+from api.util.Classes import UserAuth
+import dataclasses
 
 
 app_users = Blueprint('app_users', __name__)
 
 @app_users.route("/register", methods=['POST'])
-async def register():
-    headers = await request.json
+@validate_request(UserAuth)
+async def register(form:UserAuth):
+    form = dataclasses.asdict(form)
     user = {}
     user["user_id"] = str(uuid.uuid1())
-    user["password"] = headers['password']
-    user['username'] = headers['username']
+    user["password"] = form['password']
+    user['username'] = form['username']
     db = await _get_db()
     try:
         res = await db.execute(
