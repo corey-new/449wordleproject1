@@ -13,7 +13,7 @@ DROP TABLE IF EXISTS users;
 CREATE TABLE users(
     user_id VARCHAR PRIMARY KEY NOT NULL,
     username VARCHAR NOT NULL,
-    password VARCHAR NOT NULL,
+    password VARCHAR NOT NULL
 );
 DROP TABLE IF EXISTS guesses;
 CREATE TABLE guesses(
@@ -24,7 +24,7 @@ CREATE TABLE guesses(
     FOREIGN KEY (game_id) REFERENCES games(game_id)
 );
 
-INSERT INTO users(user_id, username, password) VALUES(1234, 'user1', 'password');
-INSERT INTO games(user_id, word) VALUES(1234, 'ccane');
-INSERT INTO games(user_id, word) VALUES(1234, 'crane');
+INSERT INTO users(user_id, username, password) VALUES('123abc', 'user1', 'password');
+INSERT INTO games(user_id, word) VALUES('123abc', 'ccane');
+INSERT INTO games(user_id, word) VALUES('123abc', 'crane');
 COMMIT;

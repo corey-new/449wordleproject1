@@ -13,7 +13,7 @@ app_users = Blueprint('app_users', __name__)
 
 @app_users.route("/register", methods=['POST'])
 async def register():
-    headers = await request.form
+    headers = await request.json
     user = {}
     user["user_id"] = str(uuid.uuid1())
     user["password"] = headers['password']
@@ -31,12 +31,22 @@ async def register():
 
     return user,201
 
-@app_users.route("/checkPassword/<username>/<password>", methods=['GET'])
-async def check(username, password):
-
-    if request.authorization and request.authorization.username == username and request.authorization.password == password:
+@app_users.route("/checkPassword", methods=['GET'])
+async def check():
+    '''Performs simple auth to authenticate a user.'''
+    username = ''
+    password = ''
+    if request.authorization:
+        username = request.authorization.username
+        password = request.authorization.password
+        
+    db = await _get_db()
+    users = await db.fetch_one(f'SELECT * FROM users WHERE username LIKE "{username}" AND password LIKE "{password}"')
+    
+    #if user is not None, that means a valid user was found with same credentials
+    if users is not None:
         return {"authenticated" : True}
     else:
-        return "", 401, {'WWW-Authenticate' : 'Basic Realm = "Fake Realm"'}
+        return "invalid login", 401, {'WWW-Authenticate' : 'Basic Realm = "Login Required"'}
     
 
