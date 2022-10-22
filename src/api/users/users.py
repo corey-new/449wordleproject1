@@ -33,7 +33,7 @@ async def register(data:UserAuth):
     except sqlite3.IntegrityError as e:
         abort(409, "user already exists.")
 
-    return user,201
+    return {'user_id': user['user_id'], 'username': user['username']},201
 
 @app_users.route("/checkPassword", methods=['GET'])
 async def check():

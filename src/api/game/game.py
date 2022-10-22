@@ -66,7 +66,7 @@ async def get_game(id:int, headers:User):
     game = await db.fetch_one(f'SELECT * FROM games WHERE game_id={game_id} AND user_id="{user_id}"')
 
     if not game:
-        return {}
+        return abort(401, 'Game Not Found')
     
     #gets guesses from table
     guesses = await db.fetch_all(f'SELECT guess, guess_num FROM guesses WHERE game_id={game_id} ORDER BY guess_num ASC')
@@ -99,7 +99,7 @@ async def make_guess(data:Guess, headers:User):
     game = await db.fetch_one(f'SELECT * FROM games WHERE game_id={game_id} AND user_id="{user_id}" AND finished=0')
 
     if game is None:
-        return abort(400, "No game found")
+        return abort(401, "No game found")
 
     valid, correct = validate_guess(guess, game.word)
     guesses_rem = game.guesses_rem

@@ -25,8 +25,4 @@ CREATE TABLE guesses(
     guess_num INTEGER NOT NULL,
     FOREIGN KEY(game_id) REFERENCES games(game_id)
 );
-
-INSERT INTO users(user_id, username, password) VALUES('123abc', 'user1', 'password');
-INSERT INTO games(user_id, word) VALUES('123abc', 'ccane');
-INSERT INTO games(user_id, word) VALUES('123abc', 'crane');
 COMMIT;
