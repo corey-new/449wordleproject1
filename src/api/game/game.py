@@ -22,7 +22,7 @@ async def create(headers:User):
     user = await db.fetch_one(f'SELECT * FROM users WHERE user_id="{user_id}"' )
 
     if not user:
-        return abort(401)
+        return abort(401, 'User not found.')
     else:
         #generates a random word and creates a new game entry in the database
         random_word = random.choice(CORRECT_WORD_BANK)
@@ -32,13 +32,13 @@ async def create(headers:User):
     if id == -1:
         return abort(500)
 
-    return {'game_id': id}
+    return {'game_id': id}, 201
 
 
 @app_create.route('/game/list', methods=['GET'])
 @validate_headers(User)
 async def get_all_games(headers: User):
-    '''gets a list of all the active games for a given user.'''
+    '''gets a list of all the active games for a given user. If no user found, returns empty list for the games'''
     headers = dataclasses.asdict(headers)
     user_id = headers['user_id']
 
@@ -57,9 +57,6 @@ async def get_all_games(headers: User):
 async def get_game(id:int, headers:User):
     '''Gets a single game give the game_id and returns the state of the game.'''
     headers = dataclasses.asdict(headers)
-    
-    if 'user_id' not in headers:
-        return abort(401)
 
     game_id = int(id)    
     user_id = headers['user_id']
@@ -102,7 +99,7 @@ async def make_guess(data:Guess, headers:User):
     game = await db.fetch_one(f'SELECT * FROM games WHERE game_id={game_id} AND user_id="{user_id}" AND finished=0')
 
     if game is None:
-        return abort(401)
+        return abort(400, "No game found")
 
     valid, correct = validate_guess(guess, game.word)
     guesses_rem = game.guesses_rem

@@ -18,6 +18,10 @@ async def register(data:UserAuth):
     user["user_id"] = str(uuid.uuid1())
     user["password"] = form['password']
     user['username'] = form['username']
+
+    #aborts if the password or username is too short
+    if len(form['password']) < 5 or len(form['username']) < 5:
+        abort(406, 'invalid parameter length')
     db = await _get_db()
     try:
         res = await db.execute(

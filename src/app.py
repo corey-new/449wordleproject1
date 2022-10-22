@@ -1,10 +1,9 @@
 from venv import create
 from quart_schema import QuartSchema
 from quart import Quart, g, request
-from api.game.create import app_create
+from api.game.game import app_create
 from api.users.users import app_users
 import toml
-
 
 app = Quart(__name__)
 QuartSchema(app)
