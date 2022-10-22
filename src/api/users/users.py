@@ -12,8 +12,8 @@ app_users = Blueprint('app_users', __name__)
 
 @app_users.route("/register", methods=['POST'])
 @validate_request(UserAuth)
-async def register(form:UserAuth):
-    form = dataclasses.asdict(form)
+async def register(data:UserAuth):
+    form = dataclasses.asdict(data)
     user = {}
     user["user_id"] = str(uuid.uuid1())
     user["password"] = form['password']
@@ -27,7 +27,7 @@ async def register(form:UserAuth):
             """,user
         )
     except sqlite3.IntegrityError as e:
-        abort(409, e)
+        abort(409, "user already exists.")
 
     return user,201
 

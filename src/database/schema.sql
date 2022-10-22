@@ -4,7 +4,8 @@ DROP TABLE IF EXISTS users;
 CREATE TABLE users(
     user_id VARCHAR PRIMARY KEY NOT NULL,
     username VARCHAR NOT NULL,
-    password VARCHAR NOT NULL
+    password VARCHAR NOT NULL,
+    UNIQUE(username)
 );
 DROP TABLE IF EXISTS games;
 CREATE TABLE games(
